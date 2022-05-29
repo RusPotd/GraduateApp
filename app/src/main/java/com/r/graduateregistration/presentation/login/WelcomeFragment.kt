@@ -51,6 +51,7 @@ class WelcomeFragment : Fragment() {
                         NavHostFragment.findNavController(this@WelcomeFragment).navigate(R.id.action_welcomeFragment_to_registerFragment)
 
                     }
+                    else -> Unit
                 }
             }
 
