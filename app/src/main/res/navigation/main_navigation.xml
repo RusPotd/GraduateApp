@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.r.graduateregistration.presentation.main.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_allGraduatesFragment"
+            app:destination="@id/allGraduatesFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_graduateRegistrationFragment"
+            app:destination="@id/graduateRegistrationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.r.graduateregistration.presentation.profile.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
+    <fragment
+        android:id="@+id/allGraduatesFragment"
+        android:name="com.r.graduateregistration.presentation.graduate_register.AllGraduatesFragment"
+        android:label="fragment_all_graduates"
+        tools:layout="@layout/fragment_all_graduates" />
+    <fragment
+        android:id="@+id/graduateRegistrationFragment"
+        android:name="com.r.graduateregistration.presentation.graduate_register.GraduateRegistrationFragment"
+        android:label="fragment_graduate_registration"
+        tools:layout="@layout/fragment_graduate_registration" />
+</navigation>
