@@ -42,4 +42,8 @@ constructor(
         return userDetails
     }
 
+    override fun updateUserData(userDetails: UserDetails){
+        userRef.document(userDetails.mobileNumber).set(userDetails)
+    }
+
 }

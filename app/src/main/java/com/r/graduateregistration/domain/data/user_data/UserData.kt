@@ -10,4 +10,6 @@ interface UserData {
 
     fun getUserData(phoneNum: String) : UserDetails
 
+    fun updateUserData(userDetails: UserDetails)
+
 }
