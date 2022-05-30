@@ -18,4 +18,9 @@
     <string name="all_graduates">All Graduates</string>
     <string name="bubble_image">bubble_image</string>
     <string name="back_arrow">back arrow</string>
+
+    <string-array name="Gender">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 </resources>
