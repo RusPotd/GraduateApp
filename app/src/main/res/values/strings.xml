@@ -23,4 +23,6 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
+    <string name="complete_registration">Complete Registration</string>
+    <string name="get_otp">Get Otp</string>
 </resources>
