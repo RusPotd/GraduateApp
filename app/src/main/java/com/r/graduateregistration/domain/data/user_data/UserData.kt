@@ -4,10 +4,11 @@ import com.r.graduateregistration.domain.models.UserDetails
 
 interface UserData {
 
-    fun isMobileNumAlreadyRegister(phoneNumber: String) : Boolean
+    suspend fun isMobileNumAlreadyRegister(phoneNumber: String) : Boolean
 
     fun addUserData(userDetails: UserDetails)
 
-    fun getUserData(phoneNum: String) : UserDetails
+    suspend fun getUserData(userId: String) : UserDetails
+
 
 }

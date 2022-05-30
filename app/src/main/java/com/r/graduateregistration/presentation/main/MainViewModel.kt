@@ -2,7 +2,11 @@ package com.r.graduateregistration.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.r.graduateregistration.domain.data.login.LoginRepository
+import com.r.graduateregistration.domain.data.user_data.UserData
+import com.r.graduateregistration.domain.models.UserDetails
 import com.r.graduateregistration.presentation.main.util.MainUiEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel
 @Inject constructor(
-    private val repository: LoginRepository
+    private val repository: LoginRepository,
+    private val userDataRepo: UserData,
 ) : ViewModel() {
 
     private val _eventFlow = MutableSharedFlow<MainUiEvents>()
@@ -30,7 +35,7 @@ class MainViewModel
     }
 
     fun onEvent(event: MainUiEvents) {
-        when(event) {
+        when (event) {
             MainUiEvents.OnLoggedIn -> {
                 viewModelScope.launch {
                     _eventFlow.emit(
@@ -46,6 +51,9 @@ class MainViewModel
                     repository.logOut()
                 }
             }
+            is MainUiEvents.UpdateUser -> {
+                updateUser(event.userDetails)
+            }
         }
     }
 
@@ -54,5 +62,20 @@ class MainViewModel
             _eventFlow.emit(event)
         }
     }
+
+    private fun updateUser(userDetails: UserDetails) {
+        userDataRepo.addUserData(userDetails)
+    }
+
+    suspend fun getUserDetails() : UserDetails {
+        return userDataRepo.getUserData(getUserId())
+    }
+
+    fun getUserId(): String {
+        val currentFirebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+        return currentFirebaseUser?.uid ?: getUserId()
+    }
+
+    suspend fun isUserLoggedIn() : Boolean = repository.isUserVerified()
 
 }

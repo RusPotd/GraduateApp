@@ -7,4 +7,6 @@ data class UserDetails(
     val city: String = "",
     val taluka: String = "",
     val profileImg: String = "",
+    val email: String = "",
+    val dist: String = "",
 )

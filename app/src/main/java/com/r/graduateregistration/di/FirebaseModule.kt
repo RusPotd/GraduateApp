@@ -6,10 +6,12 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.r.graduateregistration.domain.data.user_data.UserData
 import com.r.graduateregistration.domain.data.user_data.UserDataImpl
+import com.r.graduateregistration.domain.data.user_data.UserMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -23,12 +25,23 @@ object FirebaseModule {
 
     @Provides
     @Singleton
+    @Named("details")
     fun provideUserRef(db: FirebaseFirestore) = db.collection("user_details")
 
     @Provides
     @Singleton
+    @Named("withId")
+    fun provideUserRefWithId(db: FirebaseFirestore) = db.collection("user_details_with_id")
+
+    @Provides
+    @Singleton
     fun provideUserDataRepository(
-        usersRef: CollectionReference
-    ): UserData = UserDataImpl(usersRef)
+        firestore: FirebaseFirestore,
+        @Named("details")  userRef: CollectionReference,
+        @Named("withId") userRefWithId: CollectionReference,
+        mapper: UserMapper
+    ): UserData = UserDataImpl(firestore,userRef, userRefWithId, mapper)
+
+
 
 }
