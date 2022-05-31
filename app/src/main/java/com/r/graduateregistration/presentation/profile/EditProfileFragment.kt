@@ -38,7 +38,10 @@ class EditProfileFragment : Fragment() {
 
             binding.etFullName.setText(userDetail.fullName)
             binding.etMobileNum.setText(userDetail.mobileNumber)
+            binding.etEmailId.setText(userDetail.email)
             binding.etAddress.setText(userDetail.taluka)
+            binding.etCity.setText(userDetail.city)
+            binding.etDistrict.setText(userDetail.dist)
         }
 
         binding.btnSaveChanges.setOnClickListener {

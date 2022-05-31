@@ -20,4 +20,9 @@
     <string name="back_arrow">back arrow</string>
     <string name="complete_registration">Complete Registration</string>
     <string name="get_otp">Get Otp</string>
+    <string name="loading">Loading…</string>
+    <string name="email_id">Email ID</string>
+    <string name="address">Address</string>
+    <string name="city">City</string>
+    <string name="district">District</string>
 </resources>

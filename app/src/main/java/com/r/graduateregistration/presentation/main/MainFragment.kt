@@ -24,6 +24,7 @@ class MainFragment : Fragment() {
 
     private val mainViewModel: MainViewModel by activityViewModels()
 
+    private var fullName = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +59,7 @@ class MainFragment : Fragment() {
 
         }
 
-        lifecycleScope.launch {
+        lifecycleScope.launchWhenStarted {
             if (mainViewModel.isUserLoggedIn()) {
                 setUpUser()
             }
@@ -77,12 +78,16 @@ class MainFragment : Fragment() {
         }
 
 
+        binding.txtUserName.text = fullName
 
     }
 
     private suspend fun setUpUser() {
         val userDetails = mainViewModel.getUserDetails()
-        binding.txtUserName.text = userDetails.fullName
+        fullName = userDetails.fullName
+        binding.txtUserName.text = fullName
+
+
     }
 
 }

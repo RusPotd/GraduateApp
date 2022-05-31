@@ -38,16 +38,17 @@ class AuthViewModel
 
     private val otpNum = MutableStateFlow("")
 
-    private val _loginLoading = mutableStateOf(false)
-    val loginLoading: State<Boolean> = _loginLoading
+    private val _loginLoading = MutableSharedFlow<Boolean>()
+    val loginLoading = _loginLoading.asSharedFlow()
 
     val countDownTime = MutableStateFlow("")
 
-    val newUserRegistration = MutableStateFlow(false)
+    private val newUserRegistration = MutableStateFlow(false)
 
     private var timer: CountDownTimer? = null
 
     init {
+
         repository.setPhoneCallbacksListener(this)
 
         viewModelScope.launch {
@@ -101,9 +102,7 @@ class AuthViewModel
                         //check is there don't have account
                         if (userDataRepo.isMobileNumAlreadyRegister(phoneNumber.value)) {
                             setUiEvent(AuthEvents.ShowSnackBar("This Number already have account"))
-
                         } else {
-
                             sendOtp("+91${phoneNumber.value}", event.activity)
                         }
                     }
@@ -129,7 +128,6 @@ class AuthViewModel
                 }
             }
             else -> Unit
-
         }
     }
 
@@ -147,11 +145,9 @@ class AuthViewModel
         phoneNumber.value = phoneNo
     }
 
-
     fun setOtpText(otp: String) {
         otpNum.value = otp
     }
-
 
     private fun startCountDown() {
         val startTime = 60
@@ -172,19 +168,22 @@ class AuthViewModel
 
     private suspend fun sendOtp(phoneNo: String, activity: Activity) {
         viewModelScope.launch {
-            _loginLoading.value = true
+            _loginLoading.emit(true)
             repository.sendOtpToPhone(phoneNo, activity)
         }
 
     }
 
     private suspend fun resendOtp(phoneNo: String, activity: Activity) {
-        _loginLoading.value = true
+        _loginLoading.emit(true)
         repository.resendOtpCode(phoneNo, activity)
     }
 
     private fun verifyOtpCode(otpCode: String) {
-        _loginLoading.value = true
+        viewModelScope.launch {
+            _loginLoading.emit(true)
+
+        }
         repository.verifyOtpCode(otpCode = otpCode)
     }
 
@@ -207,10 +206,15 @@ class AuthViewModel
             setUiEvent(AuthEvents.ShowSnackBar("Unknown error try letter."))
             repository.logOut()
         }
+        viewModelScope.launch {
+            _loginLoading.emit(false)
+        }
     }
 
     override fun onOtpVerifyFailed(message: String) {
-        _loginLoading.value = false
+        viewModelScope.launch {
+            _loginLoading.emit(false)
+        }
         setUiEvent(AuthEvents.ShowSnackBar(message))
     }
 
@@ -219,7 +223,9 @@ class AuthViewModel
     }
 
     override fun onVerificationFailed(message: String) {
-        _loginLoading.value = false
+        viewModelScope.launch {
+            _loginLoading.emit(false)
+        }
         setUiEvent(AuthEvents.ShowSnackBar(message))
     }
 
@@ -227,8 +233,10 @@ class AuthViewModel
         verificationId: String?,
         token: PhoneAuthProvider.ForceResendingToken?
     ) {
+        viewModelScope.launch {
+            _loginLoading.emit(false)
+        }
         startCountDown()
-        _loginLoading.value = false
         setUiEvent(AuthEvents.OnOtpSendUi)
 
     }

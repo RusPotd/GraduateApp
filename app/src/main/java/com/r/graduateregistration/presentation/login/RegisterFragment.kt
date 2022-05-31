@@ -1,5 +1,7 @@
 package com.r.graduateregistration.presentation.login
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -23,11 +25,20 @@ class RegisterFragment : Fragment() {
 
     private val authViewModel: AuthViewModel by activityViewModels()
 
+    lateinit var dialog: Dialog
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
+
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        builder.setView(R.layout.progress_dialog)
+        builder.setCancelable(false)
+        dialog = builder.create()
+
         return binding.root
     }
 
@@ -68,6 +79,16 @@ class RegisterFragment : Fragment() {
             }
         }
 
+        lifecycleScope.launchWhenStarted {
+            authViewModel.loginLoading.collectLatest { loading ->
+                if (loading) {
+                    showProgressBar()
+                } else {
+                    hideProgressBar()
+                }
+            }
+        }
+
         binding.btnGetOtp.setOnClickListener {
             authViewModel.setUsernameText(binding.etFullName.text.toString())
             authViewModel.setPhoneNumberText(binding.etMobileNum.text.toString())
@@ -88,6 +109,15 @@ class RegisterFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun showProgressBar() {
+        dialog.show()
+
+    }
+
+    private fun hideProgressBar() {
+        dialog.hide()
     }
 
 

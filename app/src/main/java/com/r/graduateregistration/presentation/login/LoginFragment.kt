@@ -1,5 +1,7 @@
 package com.r.graduateregistration.presentation.login
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,12 +25,20 @@ class LoginFragment : Fragment() {
 
     private val authViewModel: AuthViewModel by activityViewModels()
 
+    lateinit var dialog: Dialog
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLoginBinding.inflate(inflater, container,false)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        builder.setView(R.layout.progress_dialog)
+        builder.setCancelable(false)
+        dialog = builder.create()
+
         return binding.root
     }
 
@@ -36,14 +46,15 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.txtRegister.setOnClickListener {
-            NavHostFragment.findNavController(this).navigate(R.id.action_loginFragment_to_registerFragment)
+            NavHostFragment.findNavController(this)
+                .navigate(R.id.action_loginFragment_to_registerFragment)
 
         }
 
         lifecycleScope.launchWhenStarted {
             authViewModel.authEventFlow.collectLatest { authEvents ->
 
-                when(authEvents) {
+                when (authEvents) {
                     AuthEvents.OnOtpSendUi -> {
                         binding.btnLogin.visibility = View.VISIBLE
                         binding.txtResendCode.visibility = View.VISIBLE
@@ -69,6 +80,17 @@ class LoginFragment : Fragment() {
             }
         }
 
+        lifecycleScope.launchWhenStarted {
+            authViewModel.loginLoading.collectLatest { loading ->
+                if (loading) {
+                    showProgressBar()
+                } else {
+                    hideProgressBar()
+                }
+
+            }
+        }
+
         binding.btnGetOtp.setOnClickListener {
             authViewModel.setPhoneNumberText(binding.etMobileNum.text.toString())
             authViewModel.onEvent(AuthEvents.OnLogInGetOtpButtonClick(requireActivity()))
@@ -86,6 +108,16 @@ class LoginFragment : Fragment() {
             }
         }
 
+    }
+
+
+    private fun showProgressBar() {
+        dialog.show()
+
+    }
+
+    private fun hideProgressBar() {
+        dialog.hide()
     }
 
     private fun showSnackBar(message: String) {
