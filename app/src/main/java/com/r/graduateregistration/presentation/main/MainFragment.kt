@@ -13,6 +13,7 @@ import com.r.graduateregistration.R
 import com.r.graduateregistration.databinding.FragmentMainBinding
 import com.r.graduateregistration.presentation.login.WelcomeActivity
 import com.r.graduateregistration.presentation.main.util.MainUiEvents
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -48,11 +49,19 @@ class MainFragment : Fragment() {
                         startActivity(openWelcomeActivity)
                         requireActivity().finish()
                     }
+                    MainUiEvents.OnLoggedIn -> {
 
+                    }
                     else -> Unit
                 }
             }
 
+        }
+
+        lifecycleScope.launch {
+            if (mainViewModel.isUserLoggedIn()) {
+                setUpUser()
+            }
         }
 
         binding.txtLogout.setOnClickListener {
@@ -67,6 +76,13 @@ class MainFragment : Fragment() {
             findNavController().navigate(R.id.action_mainFragment_to_allGraduatesFragment)
         }
 
+
+
+    }
+
+    private suspend fun setUpUser() {
+        val userDetails = mainViewModel.getUserDetails()
+        binding.txtUserName.text = userDetails.fullName
     }
 
 }

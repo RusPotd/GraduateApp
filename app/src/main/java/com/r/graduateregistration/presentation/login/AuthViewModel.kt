@@ -82,7 +82,7 @@ class AuthViewModel
                         setUiEvent(AuthEvents.ShowSnackBar("Enter Valid Mobile Number"))
                     } else {
                         //check is there is already account
-                        if (!userDataRepo.isMobileNumAlreadyRegister(phoneNumber.value)) {
+                        if (userDataRepo.isMobileNumAlreadyRegister(phoneNumber.value)) {
                             sendOtp("+91${phoneNumber.value}", event.activity)
                         } else {
                             setUiEvent(AuthEvents.ShowSnackBar("This Number don't have account"))
@@ -101,11 +101,11 @@ class AuthViewModel
                         //check is there don't have account
                         if (userDataRepo.isMobileNumAlreadyRegister(phoneNumber.value)) {
                             setUiEvent(AuthEvents.ShowSnackBar("This Number already have account"))
+
                         } else {
+
                             sendOtp("+91${phoneNumber.value}", event.activity)
-
                         }
-
                     }
                 }
             }
@@ -237,6 +237,5 @@ class AuthViewModel
         userDataRepo.addUserData(userDetails)
     }
 
-    fun getUserDetails(phoneNo: String) : UserDetails = userDataRepo.getUserData(phoneNo)
 
 }

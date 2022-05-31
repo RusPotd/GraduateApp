@@ -2,6 +2,8 @@ package com.r.graduateregistration.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.r.graduateregistration.domain.data.login.LoginRepository
 import com.r.graduateregistration.domain.data.user_data.UserData
 import com.r.graduateregistration.domain.models.UserDetails
@@ -33,7 +35,7 @@ class MainViewModel
     }
 
     fun onEvent(event: MainUiEvents) {
-        when(event) {
+        when (event) {
             MainUiEvents.OnLoggedIn -> {
                 viewModelScope.launch {
                     _eventFlow.emit(
@@ -49,6 +51,9 @@ class MainViewModel
                     repository.logOut()
                 }
             }
+            is MainUiEvents.UpdateUser -> {
+                updateUser(event.userDetails)
+            }
         }
     }
 
@@ -57,6 +62,21 @@ class MainViewModel
             _eventFlow.emit(event)
         }
     }
+
+    private fun updateUser(userDetails: UserDetails) {
+        userDataRepo.addUserData(userDetails)
+    }
+
+    suspend fun getUserDetails() : UserDetails {
+        return userDataRepo.getUserData(getUserId())
+    }
+
+    fun getUserId(): String {
+        val currentFirebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+        return currentFirebaseUser?.uid ?: getUserId()
+    }
+
+    suspend fun isUserLoggedIn() : Boolean = repository.isUserVerified()
 
     fun updateUserData(userDetails:UserDetails) {
         userDataRepo.updateUserData(userDetails)
