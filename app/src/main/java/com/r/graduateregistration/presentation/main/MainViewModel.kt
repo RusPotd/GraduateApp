@@ -78,4 +78,8 @@ class MainViewModel
 
     suspend fun isUserLoggedIn() : Boolean = repository.isUserVerified()
 
+    fun updateUserData(userDetails:UserDetails) {
+        userDataRepo.updateUserData(userDetails)
+    }
+
 }

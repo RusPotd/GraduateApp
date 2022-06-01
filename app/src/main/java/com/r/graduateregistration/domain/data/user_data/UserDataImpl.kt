@@ -27,6 +27,7 @@ constructor(
         } catch (e: Exception) {
             return false
         }
+
     }
 
     override fun addUserData(userDetails: UserDetails) {
@@ -38,6 +39,10 @@ constructor(
     override suspend fun getUserData(userId: String): UserDetails {
         return firestore.document("user_details_with_id/$userId")
             .getAwaitResult(userMapper::toUserDetails)
+    }
+
+    override fun updateUserData(userDetails: UserDetails) {
+        TODO("Not yet implemented")
     }
 
 }
@@ -55,4 +60,5 @@ class UserMapper @Inject constructor() {
             city = userDetails.city,
         )
     }
+
 }

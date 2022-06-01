@@ -11,4 +11,6 @@ interface UserData {
     suspend fun getUserData(userId: String) : UserDetails
 
 
+    fun updateUserData(userDetails: UserDetails)
+
 }

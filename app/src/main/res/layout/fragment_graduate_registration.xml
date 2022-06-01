@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/form1"
     tools:context=".presentation.graduate_register.GraduateRegistrationFragment">
 
     <ImageView
@@ -86,6 +87,7 @@
                         android:text="As mentioned in proof of residence" />
 
                     <EditText
+                        android:id="@+id/name"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginStart="16dp"
@@ -127,7 +129,7 @@
                         android:textSize="17sp" />
 
                     <EditText
-                        android:id="@+id/et_mobile_num"
+                        android:id="@+id/mobile_num"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginStart="18dp"
@@ -138,46 +140,6 @@
                         android:inputType="phone"
                         android:maxLength="13"
                         />
-
-                </LinearLayout>
-
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="20dp"
-                app:cardCornerRadius="10dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txt_dob"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="12dp"
-                        android:maxLines="1"
-                        android:text="@string/date_of_birth"
-                        android:textColor="@color/black"
-                        android:textSize="17sp" />
-
-                    <EditText
-                        android:id="@+id/cal_dob"
-                        android:layout_width="115dp"
-                        android:layout_height="50dp"
-                        android:layout_marginStart="18dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="18dp"
-                        android:layout_marginBottom="12dp"
-                        android:hint="dd-mm-yyyy"
-                        android:drawableEnd="@drawable/ic_date_range"/>
 
                 </LinearLayout>
 
@@ -282,7 +244,58 @@
 
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="10dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/adhar_choose"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:maxLines="1"
+                        android:text="Adhar Card"
+                        android:textColor="@color/black"
+                        android:textSize="17sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:orientation="horizontal">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="18dp"
+                            android:layout_marginTop="2dp"
+                            android:maxLines="1"
+                            android:text="Upload Adhar Card" />
+
+                        <ImageView
+                            android:id="@+id/upload_adhar_btn"
+                            android:layout_width="172dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:src="@drawable/upload" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
 
 
