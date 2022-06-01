@@ -23,11 +23,26 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
-    <string name="complete_registration">Complete Registration</string>
+
+    <string-array name="University">
+        <item>Dr. Babasaheb Ambedkar Marathwada University, Aurangabad</item>
+        <item>Swami Ramanand Teerth Marathwada University, Nanded</item>
+    </string-array>
+
+
+    <string name="complete_registration">Create New User</string>
     <string name="get_otp">Get Otp</string>
     <string name="loading">Loading…</string>
     <string name="email_id">Email ID</string>
     <string name="address">Address</string>
     <string name="city">City</string>
     <string name="district">District</string>
+    <string name="select_university">Select University</string>
+    <string name="select_district">Select District</string>
+    <string name="select_taluka">Select Taluka</string>
+    <string name="new_user">New User</string>
+    <string name="next">Next</string>
+    <string name="verify">Verify</string>
+    <string name="enter_otp">Enter otp</string>
+    <string name="done_submitting_form">Done Submitting Form</string>
 </resources>

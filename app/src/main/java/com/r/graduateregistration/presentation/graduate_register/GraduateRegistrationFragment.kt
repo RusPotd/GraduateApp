@@ -1,6 +1,5 @@
 package com.r.graduateregistration.presentation.graduate_register
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -16,6 +15,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.findNavController
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.Response
@@ -56,7 +56,7 @@ class GraduateRegistrationFragment : Fragment() {
         val url = "https://padvidhar.com/fetch-degrees"
 
         //fetch and show degrees
-        val queue = Volley.newRequestQueue(getActivity())
+        val queue = Volley.newRequestQueue(requireContext())
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url, null.toString(),
@@ -192,26 +192,23 @@ class GraduateRegistrationFragment : Fragment() {
     private fun uploaddatatodb() {
 
         val request: StringRequest =
-            object : StringRequest(Request.Method.POST, url, object : Response.Listener<String?> {
-                override fun onResponse(response: String?) {
+            object : StringRequest(Request.Method.POST, url,
+                Response.Listener<String?> { response ->
                     Toast.makeText(
-                        getActivity(),
+                        requireActivity(),
                         response, Toast.LENGTH_LONG
                     ).show()
+                    findNavController().navigate(R.id.action_graduateRegistrationFragment_to_webFragment)
 
-                    val webFragment =  WebFragment()
-                    val transaction: FragmentTransaction = requireFragmentManager().beginTransaction()
-                    transaction.replace(R.id.form1, webFragment)
-                    transaction.commit()
-
-                }
-            }, object : ErrorListener, Response.ErrorListener {
+                }, object : ErrorListener, Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
                     Toast.makeText(
-                        getActivity(),
+                        requireActivity(),
                         error.toString(),
                         Toast.LENGTH_LONG
                     ).show()
+
+                    findNavController().navigate(R.id.action_graduateRegistrationFragment_to_webFragment)
 
                 }
 

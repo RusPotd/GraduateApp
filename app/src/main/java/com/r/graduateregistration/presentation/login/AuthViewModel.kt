@@ -2,8 +2,6 @@ package com.r.graduateregistration.presentation.login
 
 import android.app.Activity
 import android.os.CountDownTimer
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth

@@ -34,5 +34,16 @@
         android:id="@+id/graduateRegistrationFragment"
         android:name="com.r.graduateregistration.presentation.graduate_register.GraduateRegistrationFragment"
         android:label="fragment_graduate_registration"
-        tools:layout="@layout/fragment_graduate_registration" />
+        tools:layout="@layout/fragment_graduate_registration" >
+        <action
+            android:id="@+id/action_graduateRegistrationFragment_to_webFragment"
+            app:destination="@id/webFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/graduateRegistrationFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/webFragment"
+        android:name="com.r.graduateregistration.presentation.graduate_register.WebFragment"
+        android:label="fragment_web"
+        tools:layout="@layout/fragment_web" />
 </navigation>

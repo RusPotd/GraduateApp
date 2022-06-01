@@ -12,9 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.r.graduateregistration.R
+import java.io.File
 
 
 class WebFragment : Fragment() {
@@ -28,10 +28,10 @@ class WebFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val thiscontext = container!!.getContext();
+        val thisContext = requireContext()
 
         val v = inflater.inflate(R.layout.fragment_web, container, false)
-        webViewSetup(v, thiscontext)
+        webViewSetup(v, thisContext)
         return v;
     }
 
@@ -46,7 +46,11 @@ class WebFragment : Fragment() {
 
         }
 
-        web_form.setDownloadListener(DownloadListener { url, userAgent, contentDisposition, mimeType, contentLength ->
+        val file = provideOutputMainDirectory(thiscontext)
+
+
+
+        web_form.setDownloadListener { url, userAgent, contentDisposition, mimeType, contentLength ->
             val request = DownloadManager.Request(Uri.parse(url))
             request.setMimeType(mimeType)
             val cookies: String = CookieManager.getInstance().getCookie(url)
@@ -57,17 +61,23 @@ class WebFragment : Fragment() {
             request.allowScanningByMediaScanner()
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             request.setDestinationInExternalPublicDir(
-                Environment.DIRECTORY_DOWNLOADS,
+                "$file/padd",
                 URLUtil.guessFileName(url, contentDisposition, mimeType)
             )
 
-            val dm= thiscontext.getSystemService(DOWNLOAD_SERVICE) as DownloadManager?
+            val dm = thiscontext.getSystemService(DOWNLOAD_SERVICE) as DownloadManager?
             dm!!.enqueue(request)
             Toast.makeText(
-                getActivity(),
+                requireActivity(),
                 "Downloading File",
                 Toast.LENGTH_SHORT
             ).show()
-        })
+        }
+    }
+
+    private fun provideOutputMainDirectory(appContext: Context): File {
+        return appContext.getExternalFilesDir("").let {
+            File(it, "padavidhar").apply { mkdirs() }
+        }
     }
 }
