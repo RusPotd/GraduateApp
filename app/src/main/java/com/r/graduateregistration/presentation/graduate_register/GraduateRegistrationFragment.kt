@@ -15,6 +15,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.Response
@@ -42,7 +43,7 @@ class GraduateRegistrationFragment : Fragment() {
     var encodeImageString: String? = null
     var encodeAdharString: String? = null
     var degree : JSONArray? = null
-    private val url = "http://192.168.43.58:8000/add-user-data"
+    private val url = "https://padvidhar.com/add-user-data"
     var selectedGender = "";
     var selectedDegree = "";
 
@@ -52,7 +53,7 @@ class GraduateRegistrationFragment : Fragment() {
     ): View {
         _binding = FragmentGraduateRegistrationBinding.inflate(inflater, container, false)
 
-        val url = "http://192.168.43.58:8000/fetch-degrees"
+        val url = "https://padvidhar.com/fetch-degrees"
 
         //fetch and show degrees
         val queue = Volley.newRequestQueue(getActivity())
@@ -144,10 +145,7 @@ class GraduateRegistrationFragment : Fragment() {
         binding.uploadDegreeBtn.setOnClickListener {
             ImagePicker.with(this)
                 .crop()
-                /*	    			//Crop image(Optional), Check Customization for more option
-                .compress(1024)			//Final image size will be less than 1 MB(Optional)
-                .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
-  */              .start(100)
+                .start(100)
         }
 
         binding.uploadAdharBtn.setOnClickListener {
@@ -193,8 +191,6 @@ class GraduateRegistrationFragment : Fragment() {
 
     private fun uploaddatatodb() {
 
-        val name: String = "Simple"
-        val dsg: String = "Test"
         val request: StringRequest =
             object : StringRequest(Request.Method.POST, url, object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
@@ -202,6 +198,12 @@ class GraduateRegistrationFragment : Fragment() {
                         getActivity(),
                         response, Toast.LENGTH_LONG
                     ).show()
+
+                    val webFragment =  WebFragment()
+                    val transaction: FragmentTransaction = requireFragmentManager().beginTransaction()
+                    transaction.replace(R.id.form1, webFragment)
+                    transaction.commit()
+
                 }
             }, object : ErrorListener, Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
@@ -210,6 +212,7 @@ class GraduateRegistrationFragment : Fragment() {
                         error.toString(),
                         Toast.LENGTH_LONG
                     ).show()
+
                 }
 
                 override fun warning(p0: TransformerException?) {

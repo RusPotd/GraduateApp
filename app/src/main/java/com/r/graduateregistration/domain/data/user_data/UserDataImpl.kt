@@ -41,6 +41,10 @@ constructor(
             .getAwaitResult(userMapper::toUserDetails)
     }
 
+    override fun updateUserData(userDetails: UserDetails) {
+        TODO("Not yet implemented")
+    }
+
 }
 
 class UserMapper @Inject constructor() {
