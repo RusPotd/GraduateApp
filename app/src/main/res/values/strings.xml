@@ -24,6 +24,62 @@
         <item>Female</item>
     </string-array>
 
+    <string-array name="Bamu_district">
+        <item>Beed</item>
+        <item>Aurangabad</item>
+        <item>Osmanabad</item>
+        <item>Jalna</item>
+    </string-array>
+
+    <string-array name="Beed">
+        <item>Beed</item>
+        <item>Kaij</item>
+        <item>Georai</item>
+        <item>Patoda</item>
+        <item>Ashti</item>
+        <item>Shirur</item>
+        <item>Ambajogai</item>
+        <item>Kaij</item>
+        <item>Majalgaon</item>
+        <item>Dharur</item>
+        <item>Parli</item>
+        <item>Wadwani</item>
+    </string-array>
+
+    <string-array name="Aurangabad">
+        <item>Aurangabad</item>
+        <item>Sillod</item>
+        <item>Soegaon</item>
+        <item>Vaijapur</item>
+        <item>Gangapur</item>
+        <item>Paithan</item>
+        <item>Phulambri</item>
+        <item>Kannad</item>
+        <item>Khultabad</item>
+    </string-array>
+
+    <string-array name="Osmanabad">
+        <item>Osmanabad</item>
+        <item>Tuljapur</item>
+        <item>Umarga</item>
+        <item>Kalamb</item>
+        <item>Paranda</item>
+        <item>Bhum</item>
+        <item>Lohara</item>
+        <item>Washi</item>
+    </string-array>
+
+    <string-array name="Jalna">
+        <item>Jalna</item>
+        <item>Ambad</item>
+        <item>Bhokardan</item>
+        <item>Jafrabad</item>
+        <item>Partur</item>
+        <item>Ghansavngi</item>
+        <item>Mantha</item>
+        <item>Badnapur</item>
+    </string-array>
+
     <string-array name="University">
         <item>Dr. Babasaheb Ambedkar Marathwada University, Aurangabad</item>
         <item>Swami Ramanand Teerth Marathwada University, Nanded</item>

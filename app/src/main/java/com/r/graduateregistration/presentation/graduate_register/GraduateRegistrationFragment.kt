@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -42,10 +43,18 @@ class GraduateRegistrationFragment : Fragment() {
     var bitmap: Bitmap? = null
     var encodeImageString: String? = null
     var encodeAdharString: String? = null
+    var encodeNameChangeString: String? = null
     var degree : JSONArray? = null
     private val url = "https://padvidhar.com/add-user-data"
     var selectedGender = "";
     var selectedDegree = "";
+    var selectedDistrict = "";
+    var selectedTaluka = "";
+
+    var university = "bamu";
+    var district: Array<String>? = null;
+    var taluka: Array<String>? = null;
+    var name_change_check_list : CheckBox? = null;
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +69,7 @@ class GraduateRegistrationFragment : Fragment() {
         val url = "https://padvidhar.com/fetch-degrees"
 
         //fetch and show degrees
-        val queue = Volley.newRequestQueue(requireContext())
+        /*val queue = Volley.newRequestQueue(requireContext())
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url, null.toString(),
@@ -68,42 +77,6 @@ class GraduateRegistrationFragment : Fragment() {
 
                 try {
                     degree = response.getJSONArray("degree")
-                    Log.d("Degree", degree.toString()+" Length: "+degree!!.length())
-
-                    var degreeArray : MutableList<String>? = mutableListOf("Dummy")
-                    (0 until degree!!.length()).forEach {
-                        val book = degree?.getJSONObject(it)
-                        Log.d("Book", book!!.get("name").toString())
-                        if (book != null) {
-                            degreeArray!!.add(book.get("name").toString())
-                        }
-                    }
-                    degreeArray!!.removeAt(0)
-
-                    // access the spinner
-                    val spinnerDegree = binding.spinnerDegree
-                    if (spinnerDegree != null) {
-                        val adapterDegree = getActivity()?.let {
-                            ArrayAdapter(
-                                it,
-                                R.layout.spinner_item, degreeArray!!.toCollection(ArrayList())
-                            )
-                        }
-                        spinnerDegree.adapter = adapterDegree
-
-                        spinnerDegree.onItemSelectedListener = object :
-                            AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(parent: AdapterView<*>,
-                                                        view: View, position: Int, id: Long) {
-                                selectedDegree = degreeArray!![position]
-                            }
-
-                            override fun onNothingSelected(parent: AdapterView<*>) {
-                                // write code to perform some action
-                            }
-                        }
-                    }
-
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
@@ -111,7 +84,9 @@ class GraduateRegistrationFragment : Fragment() {
                 Toast.makeText(getActivity(), "Fail to get data..", Toast.LENGTH_SHORT).show()
             })
 
-        queue.add<JSONObject>(jsonObjectRequest)
+        queue.add<JSONObject>(jsonObjectRequest)*/
+
+        binding.supportingDocument.visibility = View.GONE
 
         val gender = resources.getStringArray(R.array.Gender)
 
@@ -139,8 +114,85 @@ class GraduateRegistrationFragment : Fragment() {
             }
         }
 
+        if(university == "bamu"){
+            district = resources.getStringArray(R.array.Bamu_district)
+        }
+
+        // access the spinner
+        val spinnerDistrict = binding.spinnerDistrict
+        if (spinnerDistrict != null) {
+            val adapterDistrict = getActivity()?.let {
+                ArrayAdapter(
+                    it,
+                    R.layout.spinner_item, district!!
+                )
+            }
+            spinnerDistrict.adapter = adapterDistrict
+
+            spinnerDistrict.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>,
+                                            view: View, position: Int, id: Long) {
+                    selectedDistrict = district!![position]
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // write code to perform some action
+                }
+            }
+        }
+
+        taluka = resources.getStringArray(
+            getTalukaArrayString()
+        )
+
+        // access the spinner
+        val spinnerTaluka = binding.spinnerTaluka
+        if (spinnerTaluka != null) {
+            val adapterTaluka = getActivity()?.let {
+                ArrayAdapter(
+                    it,
+                    R.layout.spinner_item, taluka!!
+                )
+            }
+            spinnerTaluka.adapter = adapterTaluka
+
+            spinnerTaluka.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>,
+                                            view: View, position: Int, id: Long) {
+                    selectedTaluka = taluka!![position]
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // write code to perform some action
+                }
+            }
+        }
+
+        name_change_check_list = binding.isNameChange
+
+        name_change_check_list!!.setOnCheckedChangeListener { buttonView, isChecked ->
+            binding.supportingDocument.visibility = View.VISIBLE
+        }
 
         return binding.root
+    }
+
+    private fun getTalukaArrayString(): Int {
+        var value = R.array.Beed;
+
+        if(selectedDistrict == "Aurangabad"){
+            value = R.array.Aurangabad;
+        }
+        else if(selectedDistrict == "Jalna"){
+            value = R.array.Jalna;
+        }
+        else if(selectedDistrict == "Osmanabad"){
+            value = R.array.Osmanabad;
+        }
+
+        return value
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -158,7 +210,14 @@ class GraduateRegistrationFragment : Fragment() {
                 .start(200)
         }
 
+        binding.uploadNameChangeBtn.setOnClickListener {
+            ImagePicker.with(this)
+                .crop()
+                .start(300)
+        }
+
         binding.btnSaveChanges.setOnClickListener{
+            //Toast.makeText(getActivity(), "District : "+selectedDistrict+" Taluka : "+selectedTaluka, Toast.LENGTH_LONG)
             uploaddatatodb()
         }
 
@@ -175,8 +234,8 @@ class GraduateRegistrationFragment : Fragment() {
             bitmap = BitmapFactory.decodeStream(inputStream)
             encodeBitmapImage(bitmap!!, requestCode)
         } catch (ex: Exception) {
-        }
 
+        }
     }
 
     private fun encodeBitmapImage(bitmap: Bitmap, requestCode: Int) {
@@ -189,6 +248,9 @@ class GraduateRegistrationFragment : Fragment() {
             }
             200 -> {
                 encodeAdharString = Base64.encodeToString(bytesofimage, Base64.DEFAULT)
+            }
+            300 -> {
+                encodeNameChangeString = Base64.encodeToString(bytesofimage, Base64.DEFAULT)
             }
         }
     }
@@ -234,9 +296,17 @@ class GraduateRegistrationFragment : Fragment() {
                     map["nm"] = binding.name.text.toString()
                     map["mob"] = binding.mobileNum.text.toString()
                     map["gender"] = selectedGender
+                    map["district"] = selectedDistrict
+                    map["taluka"] = selectedTaluka
+                    map["refer"] = 1.toString()
                     map["degree_nm"] = selectedDegree
                     map["degree"] = encodeImageString!!
                     map["adhar"] = encodeAdharString!!
+
+                    if(encodeNameChangeString != null){
+                        map["name_change"] = encodeNameChangeString!!
+                    }
+
                     return map
                 }
             }

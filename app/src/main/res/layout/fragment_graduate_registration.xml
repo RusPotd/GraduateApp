@@ -198,23 +198,89 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/degree_choose"
+                        android:id="@+id/txt_dist"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="12dp"
                         android:maxLines="1"
-                        android:text="Degree"
+                        android:text="District"
                         android:textColor="@color/black"
                         android:textSize="17sp" />
 
                     <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/spinner_degree"
+                        android:id="@+id/spinner_district"
                         android:layout_width="110dp"
                         android:layout_height="40dp"
                         android:layout_marginStart="18dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="12dp" />
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:maxLines="1"
+                        android:text="Taluka"
+                        android:textColor="@color/black"
+                        android:textSize="17sp" />
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/spinner_taluka"
+                        android:layout_width="110dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="18dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="12dp" />
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/degree_choose"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="16dp"
+                        android:maxLines="1"
+                        android:text="Degree"
+                        android:textColor="@color/black"
+                        android:textSize="17sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -286,6 +352,76 @@
 
                         <ImageView
                             android:id="@+id/upload_adhar_btn"
+                            android:layout_width="172dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:src="@drawable/upload" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="10dp">
+
+                <CheckBox
+                    android:id="@+id/is_name_change"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_height="wrap_content"
+                    android:text="Is there any change in name?" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/supporting_document"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="12dp"
+                        android:maxLines="1"
+                        android:text="Name Change Supporting Document"
+                        android:textColor="@color/black"
+                        android:textSize="17sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:orientation="horizontal">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="18dp"
+                            android:layout_marginTop="2dp"
+                            android:maxLines="1"
+                            android:text="Upload necessary document" />
+
+                        <ImageView
+                            android:id="@+id/upload_name_change_btn"
                             android:layout_width="172dp"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="12dp"
