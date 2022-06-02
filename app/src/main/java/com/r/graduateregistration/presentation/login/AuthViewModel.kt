@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.PhoneAuthProvider
+import com.r.graduateregistration.domain.data.general.LocalData.Companion.address
 import com.r.graduateregistration.domain.data.login.LoginRepository
 import com.r.graduateregistration.domain.data.user_data.UserData
 import com.r.graduateregistration.domain.models.UserDetails
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -34,7 +36,14 @@ class AuthViewModel
 
     private val phoneNumber = MutableStateFlow("")
 
+
+    private val universityName = MutableStateFlow("")
+    private val districtName = MutableStateFlow("")
+    private val talukaName = MutableStateFlow("")
+
     private val otpNum = MutableStateFlow("")
+
+    val talukaList = MutableStateFlow<List<String>>(emptyList())
 
     private val _loginLoading = MutableSharedFlow<Boolean>()
     val loginLoading = _loginLoading.asSharedFlow()
@@ -73,7 +82,6 @@ class AuthViewModel
                         AuthEvents.OnRegister
                     )
                 }
-                newUserRegistration.value = true
             }
             is AuthEvents.OnLogInGetOtpButtonClick -> {
                 viewModelScope.launch {
@@ -115,7 +123,10 @@ class AuthViewModel
                 if (otpNum.value.isEmpty() || otpNum.value.length < 6) {
                     setUiEvent(AuthEvents.ShowSnackBar("Enter Valid OTP"))
                 } else {
-                    verifyOtpCode(otpNum.value)
+                    runBlocking {
+                        verifyOtpCode(otpNum.value)
+
+                    }
                 }
             }
             AuthEvents.LoginAccountClick -> {
@@ -147,6 +158,18 @@ class AuthViewModel
         otpNum.value = otp
     }
 
+    fun setUniversity(taluka: String) {
+        districtName.value = taluka
+    }
+
+    fun setDistrict(taluka: String) {
+        districtName.value = taluka
+    }
+
+    fun setTaluka(taluka: String) {
+        talukaName.value = taluka
+    }
+
     private fun startCountDown() {
         val startTime = 60
         timer?.cancel()
@@ -166,23 +189,23 @@ class AuthViewModel
 
     private suspend fun sendOtp(phoneNo: String, activity: Activity) {
         viewModelScope.launch {
-            _loginLoading.emit(true)
             repository.sendOtpToPhone(phoneNo, activity)
+            _loginLoading.emit(true)
         }
 
     }
 
     private suspend fun resendOtp(phoneNo: String, activity: Activity) {
-        _loginLoading.emit(true)
         repository.resendOtpCode(phoneNo, activity)
+        _loginLoading.emit(true)
     }
 
     private fun verifyOtpCode(otpCode: String) {
         viewModelScope.launch {
             _loginLoading.emit(true)
+            repository.verifyOtpCode(otpCode = otpCode)
 
         }
-        repository.verifyOtpCode(otpCode = otpCode)
     }
 
     override fun onOtpVerifyCompleted() {
@@ -192,55 +215,86 @@ class AuthViewModel
 
             val userDetails = UserDetails(
                 userId = currentFirebaseUser.uid,
+                universityName = universityName.value,
                 fullName = username.value,
                 mobileNumber = phoneNumber.value,
+                district = districtName.value,
+                taluka = talukaName.value,
             )
             addUserToFirestore(userDetails)
             setUiEvent(AuthEvents.UserLoggedIn)
+            viewModelScope.launch {
+                _loginLoading.emit(false)
+
+            }
 
         } else if (!newUserRegistration.value) {
             setUiEvent(AuthEvents.UserLoggedIn)
+            viewModelScope.launch {
+                _loginLoading.emit(false)
+
+            }
         } else {
+            viewModelScope.launch {
+                _loginLoading.emit(false)
+
+            }
             setUiEvent(AuthEvents.ShowSnackBar("Unknown error try letter."))
             repository.logOut()
-        }
-        viewModelScope.launch {
-            _loginLoading.emit(false)
         }
     }
 
     override fun onOtpVerifyFailed(message: String) {
+        setUiEvent(AuthEvents.ShowSnackBar(message))
         viewModelScope.launch {
             _loginLoading.emit(false)
+
         }
-        setUiEvent(AuthEvents.ShowSnackBar(message))
     }
 
     override fun onVerificationCodeDetected(otpCode: String) {
         setOtpText(otpCode)
+        viewModelScope.launch {
+            _loginLoading.emit(false)
+
+        }
     }
 
     override fun onVerificationFailed(message: String) {
+        setUiEvent(AuthEvents.ShowSnackBar(message))
         viewModelScope.launch {
             _loginLoading.emit(false)
+
         }
-        setUiEvent(AuthEvents.ShowSnackBar(message))
     }
 
     override fun onCodeSent(
         verificationId: String?,
         token: PhoneAuthProvider.ForceResendingToken?
     ) {
-        viewModelScope.launch {
-            _loginLoading.emit(false)
-        }
         startCountDown()
         setUiEvent(AuthEvents.OnOtpSendUi)
+        viewModelScope.launch {
+            _loginLoading.emit(false)
+
+        }
 
     }
 
     private fun addUserToFirestore(userDetails: UserDetails) {
-        userDataRepo.addUserData(userDetails)
+        runBlocking {
+            userDataRepo.addUserData(userDetails)
+
+        }
+    }
+
+    fun updateTalukaList(district: String) {
+        val list: List<String> = address.filter { it.district == district }.map { it.taluka }
+        viewModelScope.launch {
+            talukaList.emit(emptyList())
+            talukaList.emit(list)
+
+        }
     }
 
 

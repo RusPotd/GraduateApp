@@ -242,10 +242,11 @@
             android:maxLength="6"
             android:maxLines="1"
             android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             app:layout_constraintBottom_toTopOf="@+id/txt_resend_code"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="RtlSymmetry" />
+            />
 
 
         <TextView

@@ -45,4 +45,11 @@
     <string name="verify">Verify</string>
     <string name="enter_otp">Enter otp</string>
     <string name="done_submitting_form">Done Submitting Form</string>
+    <string name="taluka">Taluka</string>
+    <string name="university">University</string>
+    <string name="gradute_details">Gradute Details</string>
+    <string name="name">Name</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="gender">Gender</string>
+    <string name="registrations">Registrations</string>
 </resources>

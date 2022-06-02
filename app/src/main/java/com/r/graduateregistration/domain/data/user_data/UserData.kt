@@ -8,7 +8,7 @@ interface UserData {
 
     fun addUserData(userDetails: UserDetails)
 
-    suspend fun getUserData(userId: String) : UserDetails
+    suspend fun getUserData(userId: String) : UserDetails?
 
 
     fun updateUserData(userDetails: UserDetails)

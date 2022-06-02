@@ -10,8 +10,11 @@ import com.r.graduateregistration.domain.models.UserDetails
 import com.r.graduateregistration.presentation.main.util.MainUiEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.nio.channels.Channel
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,10 +24,26 @@ class MainViewModel
     private val userDataRepo: UserData,
 ) : ViewModel() {
 
-    private val _eventFlow = MutableSharedFlow<MainUiEvents>()
-    val eventFlow = _eventFlow.asSharedFlow()
+//    private val _eventFlow = MutableSharedFlow<MainUiEvents>()
+//    val eventFlow = _eventFlow.asSharedFlow()
+
+    private val _eventFlow : MutableStateFlow<MainUiEvents> = MutableStateFlow(MainUiEvents.Initial)
+    val eventFlow = _eventFlow.asStateFlow()
+
+
 
     init {
+        viewModelScope.launch {
+            if (!repository.isUserVerified()) {
+                setUiEvent(MainUiEvents.OnWelcome)
+
+            } else {
+                setUiEvent(MainUiEvents.OnLoggedIn)
+            }
+        }
+    }
+
+    fun checkLoginIn() {
         viewModelScope.launch {
             if (repository.isUserVerified()) {
                 setUiEvent(MainUiEvents.OnLoggedIn)
@@ -67,19 +86,23 @@ class MainViewModel
         userDataRepo.addUserData(userDetails)
     }
 
-    suspend fun getUserDetails() : UserDetails {
+    suspend fun getUserDetails(): UserDetails? {
         return userDataRepo.getUserData(getUserId())
     }
 
     fun getUserId(): String {
         val currentFirebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
-        return currentFirebaseUser?.uid ?: getUserId()
+        return if (currentFirebaseUser == null) {
+            repository.logOut()
+            ""
+        } else {
+            currentFirebaseUser.uid
+
+        }
+
     }
 
-    suspend fun isUserLoggedIn() : Boolean = repository.isUserVerified()
+    suspend fun isUserLoggedIn(): Boolean = repository.isUserVerified()
 
-    fun updateUserData(userDetails:UserDetails) {
-        userDataRepo.updateUserData(userDetails)
-    }
 
 }

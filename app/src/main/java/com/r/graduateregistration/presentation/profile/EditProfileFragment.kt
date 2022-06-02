@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.r.graduateregistration.databinding.FragmentEditProfileBinding
 import com.r.graduateregistration.domain.models.UserDetails
 import com.r.graduateregistration.presentation.main.MainViewModel
@@ -26,6 +27,11 @@ class EditProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEditProfileBinding.inflate(inflater, container, false)
+
+        binding.backArrow.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         return binding.root
     }
 
@@ -35,37 +41,39 @@ class EditProfileFragment : Fragment() {
 
         lifecycleScope.launch {
             val userDetail = mainViewModel.getUserDetails()
+            if (userDetail != null) {
+                binding.etFullName.setText(userDetail.fullName)
+                binding.etMobileNum.setText(userDetail.mobileNumber)
+                binding.etEmailId.setText(userDetail.email)
+                binding.etTaluka.setText(userDetail.taluka)
+                binding.etUniversity.setText(userDetail.universityName)
+                binding.etDistrict.setText(userDetail.district)
+            }
 
-            binding.etFullName.setText(userDetail.fullName)
-            binding.etMobileNum.setText(userDetail.mobileNumber)
-            binding.etEmailId.setText(userDetail.email)
-            binding.etAddress.setText(userDetail.taluka)
-            binding.etCity.setText(userDetail.city)
-            binding.etDistrict.setText(userDetail.dist)
+
         }
 
         binding.btnSaveChanges.setOnClickListener {
             val fullName = binding.etFullName.text
             val mobNum = binding.etMobileNum.text
             val email = binding.etEmailId.text
-            val address = binding.etAddress.text
-            val city = binding.etCity.text
-            val dist = binding.etDistrict.text
+            val taluka = binding.etTaluka.text
+            val district = binding.etDistrict.text
+            val university = binding.etUniversity.text
 
             val userDetails = UserDetails(
                 userId = mainViewModel.getUserId(),
                 fullName = fullName.toString(),
                 mobileNumber = mobNum.toString(),
-                city = city.toString(),
-                taluka = address.toString(),
+                taluka = taluka.toString(),
+                district = district.toString(),
                 profileImg = "",
                 email = email.toString(),
-                dist = dist.toString()
+                universityName = university.toString()
             )
             mainViewModel.onEvent(MainUiEvents.UpdateUser(userDetails))
 
         }
-
 
     }
 

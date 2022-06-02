@@ -4,11 +4,14 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +19,6 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
 import com.r.graduateregistration.R
 import com.r.graduateregistration.databinding.FragmentRegisterBinding
-import com.r.graduateregistration.domain.data.general.LocalData.Companion.address
 import com.r.graduateregistration.domain.data.general.LocalData.Companion.universityList
 import com.r.graduateregistration.presentation.login.util.AuthEvents
 import com.r.graduateregistration.presentation.main.MainActivity
@@ -29,12 +31,14 @@ class RegisterFragment : Fragment() {
 
     private val authViewModel: AuthViewModel by activityViewModels()
 
-    lateinit var dialog: Dialog
+    private lateinit var dialog: Dialog
 
-    var universityIndex: Int? = null
-    var districtIndex: Int? = null
-    var districtStr: String = ""
+    var universityIndex: Int = 0
 
+    var univ : String = "Dr. Babasaheb Ambedkar Marathwada University, Aurangabad"
+
+
+    private var isDialogShow : Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,20 +51,12 @@ class RegisterFragment : Fragment() {
         builder.setCancelable(false)
         dialog = builder.create()
 
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         binding.txtLogin.setOnClickListener {
             NavHostFragment.findNavController(this)
                 .navigate(R.id.action_registerFragment_to_loginFragment)
         }
 
-        val district =
-            arrayListOf<String>("Select District", "Aurangabad", "Jalna", "Beed", "Osmanabad")
-        val taluka = arrayListOf<String>()
+        val district = arrayListOf("Select District", "Aurangabad", "Jalna", "Beed", "Osmanabad")
 
 
 
@@ -83,19 +79,6 @@ class RegisterFragment : Fragment() {
             binding.spinnerDistrict.adapter = adapter
         }
 
-        ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item,
-            taluka
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            binding.spinnerTaluka.adapter = adapter
-        }
-
-
-
-
-
         lifecycleScope.launchWhenStarted {
             authViewModel.authEventFlow.collectLatest { authEvents ->
                 when (authEvents) {
@@ -104,6 +87,8 @@ class RegisterFragment : Fragment() {
                         binding.btnNext.visibility = View.GONE
                         binding.btnVerify.visibility = View.VISIBLE
                         binding.layoutOtp.visibility = View.VISIBLE
+                        binding.txtResendCode.visibility = View.VISIBLE
+                        dialog.setCancelable(true)
 
                     }
                     AuthEvents.UserLoggedIn -> {
@@ -134,6 +119,20 @@ class RegisterFragment : Fragment() {
                 } else {
                     hideProgressBar()
                 }
+
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            authViewModel.talukaList.collectLatest { talukaList ->
+                ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_spinner_item,
+                    talukaList
+                ).also { adapter ->
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    binding.spinnerTaluka.adapter = adapter
+                }
+
             }
         }
 
@@ -152,12 +151,22 @@ class RegisterFragment : Fragment() {
 
         }
         binding.etTaluka.setOnClickListener {
-            if (districtIndex == null) {
+            val dist = binding.txtDistrict.text.toString()
+            if (dist.isEmpty() || dist == "Select District") {
                 showSnackBar("Select District!")
             } else {
                 binding.spinnerTaluka.performClick()
 
             }
+        }
+        binding.spinnerTaluka.setOnTouchListener { v, event ->
+            val dist = binding.txtDistrict.text.toString()
+            if ( dist.isEmpty() || dist == "Select District") {
+                showSnackBar("Select District!")
+            } else {
+                binding.spinnerTaluka.performClick()
+            }
+            true
         }
 
 
@@ -170,7 +179,8 @@ class RegisterFragment : Fragment() {
                 id: Long
             ) {
                 universityIndex = position
-                binding.txtUniversity.text = universityList[position + 1].university
+                univ = universityList[position+1].university
+                binding.txtUniversity.text = univ
 
 
             }
@@ -188,14 +198,8 @@ class RegisterFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                districtIndex = position
                 binding.txtDistrict.text = district[position]
-                taluka.removeAll(taluka.toSet())
-                taluka.addAll(address.filter { it.district == district[districtIndex!!] }
-                    .map { it.taluka })
-                districtStr = district[position]
-                showSnackBar(district[position])
-
+                authViewModel.updateTalukaList(district[position])
 
             }
 
@@ -210,8 +214,7 @@ class RegisterFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                val a = address.filter { it.taluka == districtStr }.map { it.taluka }
-                binding.txtTaluka.setText(a[position])
+                binding.txtTaluka.text = authViewModel.talukaList.value[position]
 
             }
 
@@ -229,24 +232,34 @@ class RegisterFragment : Fragment() {
             val name = binding.etFullName.text
             val mobile = binding.etMobileNum.text
 
-            if (universityIndex == null || university.isEmpty()) {
+            if (university.isEmpty()) {
                 showSnackBar("Select University")
             } else if (name == null || name.isEmpty()) {
-                showSnackBar("Enter Name")
+                showSnackBar("Enter Name!")
             } else if (mobile == null || mobile.isEmpty()) {
                 showSnackBar("Enter Mobile")
             } else if (dist.toString() == "Select District" || dist.toString().isEmpty()) {
-                showSnackBar("Select District")
+                showSnackBar("Select District!")
+            } else if (tal.toString() == "Select Taluka" || tal.toString().isEmpty()) {
+                showSnackBar("Select Taluka!")
             } else {
                 authViewModel.setUsernameText(binding.etFullName.text.toString())
                 authViewModel.setPhoneNumberText(binding.etMobileNum.text.toString())
+                authViewModel.setUniversity(univ)
+                authViewModel.setDistrict(binding.txtDistrict.text.toString())
+                authViewModel.setTaluka(binding.txtTaluka.text.toString())
                 authViewModel.onEvent(AuthEvents.GetOtpButtonClick(requireActivity()))
             }
 
         }
 
+        binding.etOtp.afterTextChanged {
+            authViewModel.setOtpText(it.trim())
+            showSnackBar(it)
+
+        }
+
         binding.btnVerify.setOnClickListener {
-            authViewModel.setOtpText(binding.etOtp.text.toString())
             authViewModel.onEvent(AuthEvents.RegisterAccountClick)
         }
 
@@ -259,15 +272,28 @@ class RegisterFragment : Fragment() {
         }
 
 
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+
     }
 
 
     private fun showProgressBar() {
-        dialog.show()
+        if (isDialogShow) {
+            dialog.show()
+            isDialogShow = false
+        }
 
     }
 
     private fun hideProgressBar() {
+        isDialogShow = false
         dialog.hide()
     }
 
@@ -279,6 +305,20 @@ class RegisterFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
+        this.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(editable: Editable?) {
+                afterTextChanged.invoke(editable.toString())
+            }
+        })
     }
 
 }

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
@@ -29,30 +30,31 @@ class AllGraduatesFragment : Fragment() {
     private var _binding: FragmentAllGraduatesBinding? = null
     private val binding get() = _binding!!
 
-    var bitmap: Bitmap? = null
-    var encodeImageString: String? = null
-    var encodeAdharString: String? = null
+
     var degree: JSONArray? = null
-    var selectedGender = "";
-    var selectedDegree = "";
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAllGraduatesBinding.inflate(inflater, container, false)
+
+        binding.backArrow.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val url = "https://padvidhar.com/fetch-graduates/1"
 
 
         binding.allGraduate.layoutManager = LinearLayoutManager(requireContext())
 
+        val url = "https://padvidhar.com/fetch-graduates/1"
 
-        //fetch and show degrees
+        //fetch graduates
         val queue = Volley.newRequestQueue(requireContext())
 
         val jsonObjectRequest = JsonObjectRequest(
@@ -68,7 +70,10 @@ class AllGraduatesFragment : Fragment() {
                         gson.fromJson(degree.toString(), Array<GraduateData>::class.java).toList()
 
 
-                    val adapter = GraduateAdapter(allGraduatesList)
+                    val adapter = GraduateAdapter(allGraduatesList, onClickListener = { graduteData ->
+                        val action = AllGraduatesFragmentDirections.actionAllGraduatesFragmentToGraduteDetailsFragment(graduteData)
+                        findNavController().navigate(action)
+                    })
 
                     binding.allGraduate.adapter = adapter
 
