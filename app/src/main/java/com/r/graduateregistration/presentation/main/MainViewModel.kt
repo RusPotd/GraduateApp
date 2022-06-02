@@ -73,6 +73,7 @@ class MainViewModel
             is MainUiEvents.UpdateUser -> {
                 updateUser(event.userDetails)
             }
+            else -> {}
         }
     }
 
