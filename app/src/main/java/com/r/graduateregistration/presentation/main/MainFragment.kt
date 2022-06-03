@@ -19,28 +19,16 @@ import androidx.navigation.fragment.findNavController
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 import com.google.gson.GsonBuilder
-import com.r.graduateregistration.BuildConfig
 import com.r.graduateregistration.R
 import com.r.graduateregistration.databinding.FragmentMainBinding
 import com.r.graduateregistration.domain.models.GraduateData
-import com.r.graduateregistration.presentation.graduate_register.AllGraduatesFragmentDirections
-import com.r.graduateregistration.presentation.graduate_register.util.GraduateAdapter
 import com.r.graduateregistration.presentation.login.WelcomeActivity
 import com.r.graduateregistration.presentation.main.util.MainUiEvents
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import kotlin.system.exitProcess
 
 
 class MainFragment : Fragment() {
@@ -73,11 +61,9 @@ class MainFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
 
             mainViewModel.eventFlow.collectLatest { authEvents ->
-                println("rrrrr open welcome 444")
 
                 when (authEvents) {
                     MainUiEvents.OnWelcome -> {
-                        println("rrrrr open welcome $authEvents")
                         val openWelcomeActivity = Intent(requireActivity(), WelcomeActivity::class.java)
                         startActivity(openWelcomeActivity)
                         requireActivity().finish()
@@ -140,7 +126,7 @@ class MainFragment : Fragment() {
                     e.printStackTrace()
                 }
             }, { // below line is use to display a toast message along with our error.
-                Toast.makeText(getActivity(), "Fail to get data..", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Fail to get data..", Toast.LENGTH_SHORT).show()
             })
 
         queue.add<JSONObject>(jsonObjectRequest)
@@ -149,9 +135,7 @@ class MainFragment : Fragment() {
     private suspend fun setUpUser() {
 
         val userDetails = mainViewModel.getUserDetails()
-        if (userDetails == null) {
-            mainViewModel.onEvent(MainUiEvents.OnWelcome)
-        } else {
+        if (userDetails != null) {
             fullName = userDetails.fullName
             binding.txtUserName.text = fullName
         }

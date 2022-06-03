@@ -120,13 +120,12 @@ class AuthViewModel
                     resendOtp("+91${phoneNumber.value}", event.activity)
                 }
             }
-            AuthEvents.RegisterAccountClick -> {
+            is AuthEvents.RegisterAccountClick -> {
                 if (otpNum.value.isEmpty() || otpNum.value.length < 6) {
                     setUiEvent(AuthEvents.ShowSnackBar("Enter Valid OTP"))
                 } else {
                     runBlocking {
-                        verifyOtpCode(otpNum.value)
-
+                        verifyOtpCode(event.otp.trim())
                     }
                 }
             }
@@ -216,18 +215,20 @@ class AuthViewModel
     override fun onOtpVerifyCompleted() {
         val currentFirebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
-        if (newUserRegistration.value && currentFirebaseUser != null) {
+        if (newUserRegistration.value ) {
 
-            val userDetails = UserDetails(
-                userId = currentFirebaseUser.uid,
-                universityName = universityName.value,
-                fullName = username.value,
-                mobileNumber = phoneNumber.value,
-                district = districtName.value,
-                taluka = talukaName.value,
-                originID = originId.value
-            )
-            addUserToFirestore(userDetails)
+            val userDetails = currentFirebaseUser?.let {
+                UserDetails(
+                    userId = it.uid,
+                    universityName = universityName.value,
+                    fullName = username.value,
+                    mobileNumber = phoneNumber.value,
+                    district = districtName.value,
+                    taluka = talukaName.value,
+                    originID = originId.value
+                )
+            }
+            userDetails?.let { addUserToFirestore(it) }
             setUiEvent(AuthEvents.UserLoggedIn)
             viewModelScope.launch {
                 _loginLoading.emit(false)
@@ -288,9 +289,8 @@ class AuthViewModel
     }
 
     private fun addUserToFirestore(userDetails: UserDetails) {
-        runBlocking {
+        runCatching {
             userDataRepo.addUserData(userDetails)
-
         }
     }
 

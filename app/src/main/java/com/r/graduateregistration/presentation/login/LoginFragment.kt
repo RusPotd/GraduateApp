@@ -16,9 +16,10 @@ import com.r.graduateregistration.R
 import com.r.graduateregistration.databinding.FragmentLoginBinding
 import com.r.graduateregistration.presentation.login.util.AuthEvents
 import com.r.graduateregistration.presentation.main.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
-
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
