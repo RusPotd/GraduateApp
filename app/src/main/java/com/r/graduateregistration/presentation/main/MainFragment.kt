@@ -135,9 +135,12 @@ class MainFragment : Fragment() {
     private suspend fun setUpUser() {
 
         val userDetails = mainViewModel.getUserDetails()
-        if (userDetails != null) {
+        if (userDetails == null) {
+           mainViewModel.onEvent(MainUiEvents.OnWelcome)
+        } else {
             fullName = userDetails.fullName
             binding.txtUserName.text = fullName
+
         }
 
     }

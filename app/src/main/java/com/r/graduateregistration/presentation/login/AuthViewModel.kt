@@ -38,7 +38,9 @@ class AuthViewModel
 
 
     private val universityName = MutableStateFlow("")
+
     private val districtName = MutableStateFlow("")
+
     private val talukaName = MutableStateFlow("")
 
     private val otpNum = MutableStateFlow("")
@@ -82,6 +84,7 @@ class AuthViewModel
                         AuthEvents.OnRegister
                     )
                 }
+                newUserRegistration.value = true
             }
             is AuthEvents.OnLogInGetOtpButtonClick -> {
                 viewModelScope.launch {
@@ -210,7 +213,7 @@ class AuthViewModel
     override fun onOtpVerifyCompleted() {
         val currentFirebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
-        if (newUserRegistration.value ) {
+        if (newUserRegistration.value) {
 
             val userDetails = currentFirebaseUser?.let {
                 UserDetails(
@@ -226,20 +229,17 @@ class AuthViewModel
             setUiEvent(AuthEvents.UserLoggedIn)
             viewModelScope.launch {
                 _loginLoading.emit(false)
-
             }
 
         } else if (!newUserRegistration.value) {
             setUiEvent(AuthEvents.UserLoggedIn)
             viewModelScope.launch {
                 _loginLoading.emit(false)
-
             }
         } else {
 
             viewModelScope.launch {
                 _loginLoading.emit(false)
-
             }
             setUiEvent(AuthEvents.ShowSnackBar("Unknown error try letter."))
             repository.logOut()
@@ -250,7 +250,6 @@ class AuthViewModel
         setUiEvent(AuthEvents.ShowSnackBar(message))
         viewModelScope.launch {
             _loginLoading.emit(false)
-
         }
     }
 
@@ -258,7 +257,6 @@ class AuthViewModel
         setOtpText(otpCode)
         viewModelScope.launch {
             _loginLoading.emit(false)
-
         }
     }
 
@@ -266,7 +264,6 @@ class AuthViewModel
         setUiEvent(AuthEvents.ShowSnackBar(message))
         viewModelScope.launch {
             _loginLoading.emit(false)
-
         }
     }
 
@@ -278,7 +275,6 @@ class AuthViewModel
         setUiEvent(AuthEvents.OnOtpSendUi)
         viewModelScope.launch {
             _loginLoading.emit(false)
-
         }
 
     }
@@ -294,7 +290,6 @@ class AuthViewModel
         viewModelScope.launch {
             talukaList.emit(emptyList())
             talukaList.emit(list)
-
         }
     }
 
