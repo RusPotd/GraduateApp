@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,21 +14,17 @@ import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.r.graduateregistration.R
 import com.r.graduateregistration.databinding.FragmentGraduateRegistrationBinding
 import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import javax.xml.transform.ErrorListener
@@ -264,7 +259,10 @@ class GraduateRegistrationFragment : Fragment() {
                         requireActivity(),
                         response, Toast.LENGTH_LONG
                     ).show()
-                    findNavController().navigate(R.id.action_graduateRegistrationFragment_to_webFragment)
+
+                    val bundle = Bundle()
+                    bundle.putString("grad_number", binding.mobileNum.text.toString())
+                    findNavController().navigate(R.id.action_graduateRegistrationFragment_to_webFragment, bundle)
 
                 }, object : ErrorListener, Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
@@ -273,9 +271,6 @@ class GraduateRegistrationFragment : Fragment() {
                         error.toString(),
                         Toast.LENGTH_LONG
                     ).show()
-
-                    findNavController().navigate(R.id.action_graduateRegistrationFragment_to_webFragment)
-
                 }
 
                 override fun warning(p0: TransformerException?) {

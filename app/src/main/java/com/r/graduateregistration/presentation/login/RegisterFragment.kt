@@ -38,7 +38,6 @@ class RegisterFragment : Fragment() {
 
     var univ : String = "Dr. Babasaheb Ambedkar Marathwada University, Aurangabad"
 
-
     private var isDialogShow : Boolean = true
 
     override fun onCreateView(
