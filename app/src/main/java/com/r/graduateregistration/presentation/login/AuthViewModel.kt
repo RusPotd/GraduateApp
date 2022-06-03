@@ -44,6 +44,8 @@ class AuthViewModel
 
     private val talukaName = MutableStateFlow("")
 
+    private val uniqueId = MutableStateFlow("")
+
     private val otpNum = MutableStateFlow("")
 
     val talukaList = MutableStateFlow<List<String>>(emptyList())
@@ -173,8 +175,8 @@ class AuthViewModel
         talukaName.value = taluka
     }
 
-    fun setOriginId(id: String){
-        originId.value = id
+    fun setUniqueId(id: String){
+        uniqueId.value = id
     }
 
     private fun startCountDown() {
@@ -228,7 +230,7 @@ class AuthViewModel
                     mobileNumber = phoneNumber.value,
                     district = districtName.value,
                     taluka = talukaName.value,
-                    originID = originId.value
+                    uniqueID = uniqueId.value
                 )
             }
             userDetails?.let { addUserToFirestore(it) }

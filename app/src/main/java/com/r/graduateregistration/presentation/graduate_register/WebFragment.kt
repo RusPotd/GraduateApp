@@ -2,27 +2,18 @@ package com.r.graduateregistration.presentation.graduate_register
 
 import android.print.PrintJob;
 import android.annotation.SuppressLint
-import android.app.DownloadManager
 import android.content.Context
-import android.content.Context.DOWNLOAD_SERVICE
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.CookieManager
-import android.webkit.URLUtil
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
@@ -31,8 +22,6 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.r.graduateregistration.R
-import com.r.graduateregistration.presentation.main.MainViewModel
-import kotlinx.coroutines.launch
 import java.io.File
 import javax.xml.transform.ErrorListener
 import javax.xml.transform.TransformerException
@@ -77,9 +66,7 @@ class WebFragment : Fragment() {
         save_btn.setOnClickListener {
             graduate_responce = web_form.url.toString()
             Toast.makeText(requireActivity(), graduate_responce, Toast.LENGTH_LONG).show()
-            PrintTheWebPage(web_form)
-            uploaddatatodb()
-            findNavController().navigate(R.id.action_webFragment_to_mainFragment)
+            uploaddatatodb(web_form)
         }
 
        /* web_form.setDownloadListener { url, userAgent, contentDisposition, mimeType, contentLength ->
@@ -143,14 +130,16 @@ class WebFragment : Fragment() {
         }
     }
 
-    private fun uploaddatatodb() {
+    private fun uploaddatatodb(web_form: WebView) {
         var url = "https://padvidhar.com/add-form-pdf";
 
         val request: StringRequest =
             object : StringRequest(
                 Request.Method.POST, url,
                 Response.Listener<String?> { response ->
-                    findNavController().navigate(R.id.mainFragment)
+                    Toast.makeText(requireActivity(), response.toString(), Toast.LENGTH_LONG).show()
+                    PrintTheWebPage(web_form)
+                    findNavController().navigate(R.id.action_webFragment_to_mainFragment)
 
                 }, object : ErrorListener, Response.ErrorListener {
                     override fun onErrorResponse(error: VolleyError) {

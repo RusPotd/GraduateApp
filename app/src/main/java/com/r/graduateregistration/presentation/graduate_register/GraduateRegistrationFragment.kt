@@ -204,7 +204,7 @@ class GraduateRegistrationFragment : Fragment() {
         lifecycleScope.launch {
             val userDetail = mainViewModel.getUserDetails()
             if (userDetail != null) {
-                karyakartId = userDetail.originID
+                karyakartId = userDetail.uniqueID
             }
         }
 
@@ -286,6 +286,7 @@ class GraduateRegistrationFragment : Fragment() {
                         error.toString(),
                         Toast.LENGTH_LONG
                     ).show()
+                    Thread.sleep(20000000)
                 }
 
                 override fun warning(p0: TransformerException?) {

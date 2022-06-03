@@ -69,9 +69,6 @@ class RegisterFragment : Fragment() {
 
         val district = arrayListOf("Select District", "Aurangabad", "Jalna", "Beed", "Osmanabad")
 
-
-
-
         ArrayAdapter.createFromResource(
             requireContext(),
             R.array.University,
@@ -188,7 +185,6 @@ class RegisterFragment : Fragment() {
                 univ = universityList[position+1].university
                 binding.txtUniversity.text = univ
 
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -206,7 +202,6 @@ class RegisterFragment : Fragment() {
             ) {
                 binding.txtDistrict.text = district[position]
                 authViewModel.updateTalukaList(district[position])
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -221,9 +216,7 @@ class RegisterFragment : Fragment() {
                 id: Long
             ) {
                 binding.txtTaluka.text = authViewModel.talukaList.value[position]
-
             }
-
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
@@ -267,11 +260,7 @@ class RegisterFragment : Fragment() {
 
         binding.btnVerify.setOnClickListener {
             uploaddatatodb(binding)
-            authViewModel.setOriginId(id)
-            authViewModel.onEvent(AuthEvents.RegisterAccountClick(binding.etOtp.text.toString()))
         }
-
-
 
         binding.txtResendCode.setOnClickListener {
             if (authViewModel.countDownTime.value == "Resend Code") {
@@ -290,8 +279,12 @@ class RegisterFragment : Fragment() {
                 Request.Method.POST, url,
                 Response.Listener<String?> { response ->
 
+                    Toast.makeText(requireActivity(), response.toString(), Toast.LENGTH_LONG)
                     id = response.toString()
-                    findNavController().navigate(R.id.mainFragment)
+                    authViewModel.setUniqueId(id)
+                    authViewModel.onEvent(AuthEvents.RegisterAccountClick(binding.etOtp.text.toString()))
+
+                    /*findNavController().navigate(R.id.mainFragment)*/
 
                 }, object : ErrorListener, Response.ErrorListener {
                     override fun onErrorResponse(error: VolleyError) {

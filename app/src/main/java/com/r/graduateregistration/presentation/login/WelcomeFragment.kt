@@ -5,14 +5,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
+import com.android.volley.AuthFailureError
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.r.graduateregistration.R
+import com.r.graduateregistration.databinding.FragmentRegisterBinding
 import com.r.graduateregistration.databinding.FragmentWelcomeBinding
 import com.r.graduateregistration.presentation.login.util.AuthEvents
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.xml.transform.ErrorListener
+import javax.xml.transform.TransformerException
 
 
 class WelcomeFragment : Fragment() {
@@ -58,6 +68,7 @@ class WelcomeFragment : Fragment() {
         }
 
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
