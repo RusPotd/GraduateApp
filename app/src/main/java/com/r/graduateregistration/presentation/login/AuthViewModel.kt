@@ -36,6 +36,7 @@ class AuthViewModel
 
     private val phoneNumber = MutableStateFlow("")
 
+    private val originId = MutableStateFlow("")
 
     private val universityName = MutableStateFlow("")
     private val districtName = MutableStateFlow("")
@@ -170,6 +171,10 @@ class AuthViewModel
         talukaName.value = taluka
     }
 
+    fun setOriginId(id: String){
+        originId.value = id
+    }
+
     private fun startCountDown() {
         val startTime = 60
         timer?.cancel()
@@ -220,6 +225,7 @@ class AuthViewModel
                 mobileNumber = phoneNumber.value,
                 district = districtName.value,
                 taluka = talukaName.value,
+                originID = originId.value
             )
             addUserToFirestore(userDetails)
             setUiEvent(AuthEvents.UserLoggedIn)

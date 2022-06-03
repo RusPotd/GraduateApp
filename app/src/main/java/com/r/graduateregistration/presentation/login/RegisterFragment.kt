@@ -12,10 +12,18 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import com.android.volley.AuthFailureError
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.material.snackbar.Snackbar
 import com.r.graduateregistration.R
 import com.r.graduateregistration.databinding.FragmentRegisterBinding
@@ -23,6 +31,8 @@ import com.r.graduateregistration.domain.data.general.LocalData.Companion.univer
 import com.r.graduateregistration.presentation.login.util.AuthEvents
 import com.r.graduateregistration.presentation.main.MainActivity
 import kotlinx.coroutines.flow.collectLatest
+import javax.xml.transform.ErrorListener
+import javax.xml.transform.TransformerException
 
 
 class RegisterFragment : Fragment() {
@@ -38,6 +48,7 @@ class RegisterFragment : Fragment() {
     var univ : String = "Dr. Babasaheb Ambedkar Marathwada University, Aurangabad"
 
     private var isDialogShow : Boolean = true
+    var id = "";
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -111,7 +122,7 @@ class RegisterFragment : Fragment() {
             }
         }
 
-        lifecycleScope.launchWhenStarted {
+        /*lifecycleScope.launchWhenStarted {
             authViewModel.loginLoading.collectLatest { loading ->
                 if (loading) {
                     showProgressBar()
@@ -120,7 +131,8 @@ class RegisterFragment : Fragment() {
                 }
 
             }
-        }
+        }*/
+
         lifecycleScope.launchWhenStarted {
             authViewModel.talukaList.collectLatest { talukaList ->
                 ArrayAdapter(
@@ -139,7 +151,6 @@ class RegisterFragment : Fragment() {
             authViewModel.setUsernameText(binding.etFullName.text.toString())
             authViewModel.setPhoneNumberText(binding.etMobileNum.text.toString())
             authViewModel.onEvent(AuthEvents.GetOtpButtonClick(requireActivity()))
-
         }
 
         binding.etUniversity.setOnClickListener {
@@ -158,6 +169,7 @@ class RegisterFragment : Fragment() {
 
             }
         }
+
         binding.spinnerTaluka.setOnTouchListener { v, event ->
             val dist = binding.txtDistrict.text.toString()
             if ( dist.isEmpty() || dist == "Select District") {
@@ -249,20 +261,18 @@ class RegisterFragment : Fragment() {
                 authViewModel.setTaluka(binding.txtTaluka.text.toString())
                 authViewModel.onEvent(AuthEvents.GetOtpButtonClick(requireActivity()))
             }
-
         }
 
         binding.etOtp.afterTextChanged {
             authViewModel.setOtpText(it.trim())
             showSnackBar(it)
-
         }
 
         binding.btnVerify.setOnClickListener {
+            uploaddatatodb(binding)
+            authViewModel.setOriginId(id)
             authViewModel.onEvent(AuthEvents.RegisterAccountClick)
         }
-
-
 
         binding.txtResendCode.setOnClickListener {
             if (authViewModel.countDownTime.value == "Resend Code") {
@@ -270,16 +280,61 @@ class RegisterFragment : Fragment() {
             }
         }
 
-
-
         return binding.root
+    }
+
+    private fun uploaddatatodb(binding: FragmentRegisterBinding) {
+        var url = "https://padvidhar.com/add-karyakarta";
+
+        val request: StringRequest =
+            object : StringRequest(
+                Request.Method.POST, url,
+                Response.Listener<String?> { response ->
+
+                    id = response.toString()
+                    findNavController().navigate(R.id.mainFragment)
+
+                }, object : ErrorListener, Response.ErrorListener {
+                    override fun onErrorResponse(error: VolleyError) {
+                        Toast.makeText(
+                            requireActivity(),
+                            error.toString(),
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                    }
+
+                    override fun warning(p0: TransformerException?) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun error(p0: TransformerException?) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun fatalError(p0: TransformerException?) {
+                        TODO("Not yet implemented")
+                    }
+                }) {
+                @Throws(AuthFailureError::class)
+                override fun getParams(): MutableMap<String, String>? {
+                    val map: MutableMap<String, String> = HashMap()
+
+                    map["university"] = univ
+                    map["name"] = binding.etFullName.text.toString()
+                    map["mobile"] = binding.etMobileNum.text.toString()
+                    map["district"] = binding.txtDistrict.text.toString()
+                    map["taluka"] = binding.txtTaluka.text.toString()
+
+                    return map
+                }
+            }
+        val queue = Volley.newRequestQueue(getActivity())
+        queue.add(request)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
     }
 
 

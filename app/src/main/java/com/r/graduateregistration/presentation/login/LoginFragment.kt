@@ -80,7 +80,7 @@ class LoginFragment : Fragment() {
             }
         }
 
-        lifecycleScope.launchWhenStarted {
+        /*lifecycleScope.launchWhenStarted {
             authViewModel.loginLoading.collectLatest { loading ->
                 if (loading) {
                     showProgressBar()
@@ -89,7 +89,7 @@ class LoginFragment : Fragment() {
                 }
 
             }
-        }
+        }*/
 
         binding.btnGetOtp.setOnClickListener {
             authViewModel.setPhoneNumberText(binding.etMobileNum.text.toString())

@@ -21,14 +21,28 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.android.volley.AuthFailureError
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.r.graduateregistration.R
+import com.r.graduateregistration.presentation.main.MainViewModel
+import kotlinx.coroutines.launch
 import java.io.File
+import javax.xml.transform.ErrorListener
+import javax.xml.transform.TransformerException
 
 
 class WebFragment : Fragment() {
 
     var graduate_number = "";
+    var graduate_responce = "";
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         graduate_number = requireArguments().getString("grad_number")!!
@@ -61,7 +75,10 @@ class WebFragment : Fragment() {
         val file = provideOutputMainDirectory(thiscontext)
 
         save_btn.setOnClickListener {
-            PrintTheWebPage(web_form);
+            graduate_responce = web_form.url.toString()
+            Toast.makeText(requireActivity(), graduate_responce, Toast.LENGTH_LONG).show()
+            PrintTheWebPage(web_form)
+            uploaddatatodb()
             findNavController().navigate(R.id.action_webFragment_to_mainFragment)
         }
 
@@ -112,6 +129,7 @@ class WebFragment : Fragment() {
 
         // Creating  PrintDocumentAdapter instance
         val printAdapter = webView.createPrintDocumentAdapter(jobName)
+
         assert(printManager != null)
         printJob = printManager!!.print(
             jobName, printAdapter,
@@ -124,7 +142,7 @@ class WebFragment : Fragment() {
             File(it, "padavidhar").apply { mkdirs() }
         }
     }
-/*
+
     private fun uploaddatatodb() {
         var url = "https://padvidhar.com/add-form-pdf";
 
@@ -160,14 +178,13 @@ class WebFragment : Fragment() {
                 override fun getParams(): MutableMap<String, String>? {
                     val map: MutableMap<String, String> = HashMap()
 
-                    map["nm"] = binding.name.text.toString()
-                    map["mob"] = binding.mobileNum.text.toString()
-                    map["gender"] = selectedGender
+                    map["number"] = graduate_number
+                    map["form"] = graduate_responce
 
                     return map
                 }
             }
         val queue = Volley.newRequestQueue(getActivity())
         queue.add(request)
-    }*/
+    }
 }

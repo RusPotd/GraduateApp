@@ -9,5 +9,6 @@ data class UserDetails(
     val district: String = "",
     val taluka: String = "",
     val profileImg: String = "",
-    val uniqueID: String = ""
+    val uniqueID: String = "",
+val originID: String = ""
 )

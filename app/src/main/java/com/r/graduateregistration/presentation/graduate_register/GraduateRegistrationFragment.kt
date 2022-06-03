@@ -14,6 +14,8 @@ import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
@@ -24,6 +26,8 @@ import com.android.volley.toolbox.Volley
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.r.graduateregistration.R
 import com.r.graduateregistration.databinding.FragmentGraduateRegistrationBinding
+import com.r.graduateregistration.presentation.main.MainViewModel
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -50,6 +54,10 @@ class GraduateRegistrationFragment : Fragment() {
     var district: Array<String>? = null;
     var taluka: Array<String>? = null;
     var name_change_check_list : CheckBox? = null;
+
+    var karyakartId = "";
+    private val mainViewModel: MainViewModel by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -193,6 +201,13 @@ class GraduateRegistrationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        lifecycleScope.launch {
+            val userDetail = mainViewModel.getUserDetails()
+            if (userDetail != null) {
+                karyakartId = userDetail.originID
+            }
+        }
+
         binding.uploadDegreeBtn.setOnClickListener {
             ImagePicker.with(this)
                 .crop()
@@ -293,7 +308,7 @@ class GraduateRegistrationFragment : Fragment() {
                     map["gender"] = selectedGender
                     map["district"] = selectedDistrict
                     map["taluka"] = selectedTaluka
-                    map["refer"] = 1.toString()
+                    map["refer"] = karyakartId
                     map["degree_nm"] = selectedDegree
                     map["degree"] = encodeImageString!!
                     map["adhar"] = encodeAdharString!!
