@@ -22,9 +22,10 @@ import com.r.graduateregistration.databinding.FragmentRegisterBinding
 import com.r.graduateregistration.domain.data.general.LocalData.Companion.universityList
 import com.r.graduateregistration.presentation.login.util.AuthEvents
 import com.r.graduateregistration.presentation.main.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
-
+@AndroidEntryPoint
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
@@ -136,16 +137,10 @@ class RegisterFragment : Fragment() {
             }
         }
 
-        binding.btnGetOtp.setOnClickListener {
-            authViewModel.setUsernameText(binding.etFullName.text.toString())
-            authViewModel.setPhoneNumberText(binding.etMobileNum.text.toString())
-            authViewModel.onEvent(AuthEvents.GetOtpButtonClick(requireActivity()))
-
-        }
-
         binding.etUniversity.setOnClickListener {
             binding.spinnerUniversity.performClick()
         }
+
         binding.etDistrict.setOnClickListener {
             binding.spinnerDistrict.performClick()
 
@@ -243,12 +238,12 @@ class RegisterFragment : Fragment() {
             } else if (tal.toString() == "Select Taluka" || tal.toString().isEmpty()) {
                 showSnackBar("Select Taluka!")
             } else {
-                authViewModel.setUsernameText(binding.etFullName.text.toString())
-                authViewModel.setPhoneNumberText(binding.etMobileNum.text.toString())
+                authViewModel.setUsernameText(name.toString())
+                authViewModel.setPhoneNumberText(mobile.toString())
                 authViewModel.setUniversity(univ)
-                authViewModel.setDistrict(binding.txtDistrict.text.toString())
-                authViewModel.setTaluka(binding.txtTaluka.text.toString())
-                authViewModel.onEvent(AuthEvents.GetOtpButtonClick(requireActivity()))
+                authViewModel.setDistrict(dist.toString())
+                authViewModel.setTaluka(tal.toString())
+                authViewModel.onEvent(AuthEvents.GetOtpButtonClick(requireActivity(), binding.etOtp.text.toString().trim()))
             }
 
         }
@@ -260,7 +255,7 @@ class RegisterFragment : Fragment() {
         }
 
         binding.btnVerify.setOnClickListener {
-            authViewModel.onEvent(AuthEvents.RegisterAccountClick)
+            authViewModel.onEvent(AuthEvents.RegisterAccountClick(binding.etOtp.text.toString()))
         }
 
 
@@ -276,12 +271,6 @@ class RegisterFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-
-    }
 
 
     private fun showProgressBar() {

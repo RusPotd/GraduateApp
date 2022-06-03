@@ -261,25 +261,12 @@
             android:paddingStart="20dp"
             android:textAlignment="center"
             android:textSize="17sp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/btn_get_otp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/btn_verify"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="RtlSymmetry" />
 
-        <Button
-            android:id="@+id/btn_get_otp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="66dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="28dp"
-            android:text="@string/get_otp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/btn_verify"
@@ -289,7 +276,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="28dp"
             android:text="@string/verify"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

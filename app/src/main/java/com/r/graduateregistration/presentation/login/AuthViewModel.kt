@@ -119,13 +119,12 @@ class AuthViewModel
                     resendOtp("+91${phoneNumber.value}", event.activity)
                 }
             }
-            AuthEvents.RegisterAccountClick -> {
+            is AuthEvents.RegisterAccountClick -> {
                 if (otpNum.value.isEmpty() || otpNum.value.length < 6) {
                     setUiEvent(AuthEvents.ShowSnackBar("Enter Valid OTP"))
                 } else {
                     runBlocking {
-                        verifyOtpCode(otpNum.value)
-
+                        verifyOtpCode(event.otp.trim())
                     }
                 }
             }
@@ -282,9 +281,8 @@ class AuthViewModel
     }
 
     private fun addUserToFirestore(userDetails: UserDetails) {
-        runBlocking {
+        runCatching {
             userDataRepo.addUserData(userDetails)
-
         }
     }
 
