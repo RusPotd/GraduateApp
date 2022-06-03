@@ -19,7 +19,13 @@ import androidx.navigation.fragment.findNavController
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.gson.GsonBuilder
+import com.r.graduateregistration.BuildConfig
 import com.r.graduateregistration.R
 import com.r.graduateregistration.databinding.FragmentMainBinding
 import com.r.graduateregistration.domain.models.GraduateData
@@ -29,6 +35,7 @@ import kotlinx.coroutines.flow.collectLatest
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import kotlin.system.exitProcess
 
 
 class MainFragment : Fragment() {
@@ -80,6 +87,7 @@ class MainFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             if (mainViewModel.isUserLoggedIn()) {
                 setUpUser()
+                init()
             }
         }
 
@@ -100,6 +108,8 @@ class MainFragment : Fragment() {
 
 
     }
+
+
 
     private fun getGraduateCount() {
         val url = "https://padvidhar.com/fetch-graduates/1"
@@ -154,39 +164,38 @@ class MainFragment : Fragment() {
             }
         }
 
-//        database.collection("updates").get().addOnCompleteListener(object:
-//            OnCompleteListener<QuerySnapshot> {
-//            override fun onComplete(p0: Task<QuerySnapshot>) {
-//                if(p0.isSuccessful){
-//                    for(data in p0.result!!){
-//                        var avail = data.get("available")
-//                        val versionCode: String = BuildConfig.VERSION_NAME
-//                        if(avail != versionCode){
-//                            MaterialAlertDialogBuilder(this@MainActivity)
-//                                .setTitle("Update Available !!")
-//                                .setMessage("Compulsory update avaiable,  please update app to latest version to continue!!!")
-//                                .setPositiveButton("update",
-//                                    DialogInterface.OnClickListener { p0, p1 ->
-//                                        val browserIntent = Intent(
-//                                            Intent.ACTION_VIEW,
-//                                            Uri.parse(data.get("path").toString())
-//
-//                                        )
-//                                        startActivity(browserIntent)
-//                                        this@MainActivity.finish()
-//                                        exitProcess(0)
-//                                    })
-//                                .setNegativeButton("No", DialogInterface.OnClickListener{ p0, p1 ->
-//                                    this@MainActivity.finish()
-//                                    exitProcess(0)
-//                                })
-//                                .show()
-//                        }
-//                    }
-//                }
-//            }
-//
-//        })
+        val  database = FirebaseFirestore.getInstance()
+
+
+        database.collection("updates").get().addOnCompleteListener { p0 ->
+            if (p0.isSuccessful) {
+                for (data in p0.result!!) {
+                    var avail = data.get("available")
+                    val versionCode: String = BuildConfig.VERSION_NAME
+                    if (avail != versionCode) {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Update Available !!")
+                            .setMessage("Compulsory update avaiable,  please update app to latest version to continue!!!")
+                            .setPositiveButton("update",
+                                DialogInterface.OnClickListener { p0, p1 ->
+                                    val browserIntent = Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse(data.get("path").toString())
+
+                                    )
+                                    startActivity(browserIntent)
+                                    requireActivity().finish()
+                                    exitProcess(0)
+                                })
+                            .setNegativeButton("No", DialogInterface.OnClickListener { p0, p1 ->
+                                requireActivity().finish()
+                                exitProcess(0)
+                            })
+                            .show()
+                    }
+                }
+            }
+        }
 
     }
 
