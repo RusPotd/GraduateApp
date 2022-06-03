@@ -57,6 +57,10 @@ class GraduateRegistrationFragment : Fragment() {
     ): View {
         _binding = FragmentGraduateRegistrationBinding.inflate(inflater, container, false)
 
+        binding.backArrow.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         val url = "https://padvidhar.com/fetch-degrees"
 
         //fetch and show degrees

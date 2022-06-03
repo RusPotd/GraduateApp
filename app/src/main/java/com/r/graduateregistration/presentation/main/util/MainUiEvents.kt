@@ -4,6 +4,7 @@ import com.r.graduateregistration.domain.models.UserDetails
 
 
 sealed class MainUiEvents {
+    object Initial: MainUiEvents()
     object OnWelcome: MainUiEvents()
     object OnLoggedIn: MainUiEvents()
     data class UpdateUser(val userDetails: UserDetails) : MainUiEvents()

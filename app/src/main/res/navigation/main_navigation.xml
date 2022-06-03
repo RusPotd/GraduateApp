@@ -29,7 +29,11 @@
         android:id="@+id/allGraduatesFragment"
         android:name="com.r.graduateregistration.presentation.graduate_register.AllGraduatesFragment"
         android:label="fragment_all_graduates"
-        tools:layout="@layout/fragment_all_graduates" />
+        tools:layout="@layout/fragment_all_graduates" >
+        <action
+            android:id="@+id/action_allGraduatesFragment_to_graduteDetailsFragment"
+            app:destination="@id/graduteDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/graduateRegistrationFragment"
         android:name="com.r.graduateregistration.presentation.graduate_register.GraduateRegistrationFragment"
@@ -51,5 +55,14 @@
             app:destination="@id/mainFragment"
             app:popUpTo="@id/mainFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/graduteDetailsFragment"
+        android:name="com.r.graduateregistration.presentation.graduate_register.GraduteDetailsFragment"
+        android:label="fragment_gradute_details"
+        tools:layout="@layout/fragment_gradute_details" >
+        <argument
+            android:name="gradute_data"
+            app:argType="com.r.graduateregistration.domain.models.GraduateData" />
     </fragment>
 </navigation>
