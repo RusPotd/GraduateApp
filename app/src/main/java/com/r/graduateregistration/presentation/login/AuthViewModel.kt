@@ -161,7 +161,7 @@ class AuthViewModel
     }
 
     fun setUniversity(taluka: String) {
-        districtName.value = taluka
+        universityName.value = taluka
     }
 
     fun setDistrict(taluka: String) {
