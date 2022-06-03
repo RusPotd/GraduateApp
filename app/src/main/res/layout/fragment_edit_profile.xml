@@ -123,11 +123,11 @@
                 android:hint="@string/university"
                 android:inputType="textEmailAddress"
                 android:lines="1"
-                android:maxLines="1"
+                android:maxLines="3"
                 android:paddingStart="20dp"
                 tools:ignore="RtlSymmetry"
                 android:importantForAutofill="no"
-                android:enabled="false"/>
+                android:focusable="false"/>
 
             <EditText
                 android:id="@+id/et_district"
@@ -144,7 +144,7 @@
                 android:paddingStart="20dp"
                 tools:ignore="RtlSymmetry"
                 android:autofillHints=""
-                android:enabled="false"/>
+                android:focusable="false"/>
 
             <EditText
                 android:id="@+id/et_taluka"
@@ -160,7 +160,7 @@
                 android:maxLines="1"
                 android:paddingStart="20dp"
                 tools:ignore="Autofill,RtlSymmetry"
-                android:enabled="false"/>
+                android:focusable="false"/>
 
 
 
