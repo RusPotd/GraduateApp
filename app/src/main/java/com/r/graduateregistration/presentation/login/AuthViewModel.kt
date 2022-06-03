@@ -210,17 +210,19 @@ class AuthViewModel
     override fun onOtpVerifyCompleted() {
         val currentFirebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
-        if (newUserRegistration.value && currentFirebaseUser != null) {
+        if (newUserRegistration.value ) {
 
-            val userDetails = UserDetails(
-                userId = currentFirebaseUser.uid,
-                universityName = universityName.value,
-                fullName = username.value,
-                mobileNumber = phoneNumber.value,
-                district = districtName.value,
-                taluka = talukaName.value,
-            )
-            addUserToFirestore(userDetails)
+            val userDetails = currentFirebaseUser?.let {
+                UserDetails(
+                    userId = it.uid,
+                    universityName = universityName.value,
+                    fullName = username.value,
+                    mobileNumber = phoneNumber.value,
+                    district = districtName.value,
+                    taluka = talukaName.value,
+                )
+            }
+            userDetails?.let { addUserToFirestore(it) }
             setUiEvent(AuthEvents.UserLoggedIn)
             viewModelScope.launch {
                 _loginLoading.emit(false)
@@ -234,6 +236,7 @@ class AuthViewModel
 
             }
         } else {
+
             viewModelScope.launch {
                 _loginLoading.emit(false)
 
